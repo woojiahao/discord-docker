@@ -43,3 +43,7 @@ jar {
     }
   }
 }
+
+shadowJar {
+  archiveName("bot.${extension}")
+}
