@@ -3,6 +3,13 @@ Demo project for hosting a Discord bot written in Kotlin with Docker on Heroku
 
 This project will use concepts such as multi-stage builds in Docker and hosting Docker applications in Heroku to deploy this Discord bot.
 
+1. Hosting the bot locally
+2. Hosting the bot using Heroku
+3. Project composition
+   1. `build.gradle`
+   2. `Dockerfile`
+   3. `heroku.yml`
+
 ## Hosting the bot locally
 As pre-requisites, you must have Docker installed. In my case, I'm running Docker on Manjaro linux. You should also create a Discord bot account through Discord's [developer portal.](https://discordapp.com/developers/docs/intro)
 
@@ -13,24 +20,69 @@ As pre-requisites, you must have Docker installed. In my case, I'm running Docke
    $ cd discord-docker
    ```
 
-2. Initiatialise the repository as a Heroku application
-   
-   ```bash 
-   $ heroku create <optional application name>
-   ```
-
-3. Create the docker image and verify whether the image is created
+2. Create the docker image and verify whether the image is created
    
    ```bash
    $ docker build -t discord-docker .
    $ docker image ls
    ```
 
-4. Once the image has been created, run the image, providing the bot token as an environment variable. Once it launches, verify that the container is running.
+3. Once the image has been created, run the image, providing the bot token as an environment variable. Once it launches, verify that the container is running.
    
    ```bash
    $ docker run -e BOT_TOKEN=<BOT TOKEN> -d discord-docker:latest
    $ docker container ls
+   ```
+
+4. Alternatively, you can use the included bash script - `run.sh` to execute the program
+   
+   ```bash
+   $ export BOT_TOKEN=<BOT TOKEN>
+   $ chmod +x run.sh
+   $ ./run.sh
+   ```
+
+## Hosting the bot using Heroku
+Heroku's integration with Docker is stupidly simple and it only takes 3 lines of configuration to get this bot working. However, if you have additional setup required such as including steps for add ons such as `heroku-postgresql`, the configuration file might increase. For that, you would consult need to consult the documentation found [here.](https://devcenter.heroku.com/articles/build-docker-images-heroku-yml)
+
+The files required for Heroku integration is already included with the project.
+
+1. Clone this repository and navigate to the folder
+   
+   ```bash
+   $ git clone https://github.com/woojiahao/discord-docker.git
+   $ cd discord-docker
+   ```
+
+2. Initialise the repository for Heroku
+   
+   ```bash
+   $ heroku create [<APPLICATION NAME>]
+   $ git remote -v # Should see a remote labelled "heroku"
+   ```
+
+3. Set up the bot token environment variable (along with any other environment variables)
+   
+   ```bash
+   $ heroku config:set BOT_TOKEN=<BOT TOKEN>
+   ```
+
+4. Set the stack of the application to `container` - this tells Heroku to use the OS image specified under Docker, more information [here](https://devcenter.heroku.com/articles/stack)
+   
+   ```bash
+   $ heroku stack:set container
+   ```
+
+5. Push the repository to Heroku
+   
+   ```bash
+   $ git push heroku master
+   ```
+
+6. Activate the worker dyno
+   
+   ```bash
+   $ heroku ps:scale worker=1
    ```
 
 ## Project composition
@@ -111,4 +163,17 @@ FROM openjdk:8-jre-alpine
 WORKDIR /app
 COPY --from=builder /builder/build/libs/bot.jar .
 CMD ["java", "-jar", "bot.jar"]
+```
+
+### `heroku.yml`
+The `heroku.yml` file contains the configuration needed for Heroku to run your application. In that sense, it is similar to the traditional `Procfile` that is provided to Heroku applications.
+
+In this scenario, we don't need to use an elaborate `heroku.yml` file, all we need is to specify that the worker dyno will be based off the instructions of the `Dockerfile` and that's all. 
+
+If you do need to include information like addons and build steps, you can feel free to do so through the use of the additional properties within the configuration file. More information can be found [here.](https://devcenter.heroku.com/articles/build-docker-images-heroku-yml)
+
+```yaml
+build:
+  docker:
+    worker: Dockerfile
 ```
