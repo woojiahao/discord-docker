@@ -3,12 +3,12 @@ Demo project for hosting a Discord bot written in Kotlin with Docker on Heroku
 
 This project will use concepts such as multi-stage builds in Docker and hosting Docker applications in Heroku to deploy this Discord bot.
 
-1. Hosting the bot locally
-2. Hosting the bot using Heroku
-3. Project composition
-   1. `build.gradle`
-   2. `Dockerfile`
-   3. `heroku.yml`
+1. [Hosting the bot locally](https://github.com/woojiahao/discord-docker#hosting-the-bot-locally)
+2. [Hosting the bot using Heroku](https://github.com/woojiahao/discord-docker#hosting-the-bot-using-heroku)
+3. [Project composition](https://github.com/woojiahao/discord-docker#project-composition)
+   1. [`build.gradle`](https://github.com/woojiahao/discord-docker#buildgradle)
+   2. [`Dockerfile`](https://github.com/woojiahao/discord-docker#dockerfile)
+   3. [`heroku.yml`](https://github.com/woojiahao/discord-docker#herokuyml)
 
 ## Hosting the bot locally
 As pre-requisites, you must have Docker installed. In my case, I'm running Docker on Manjaro linux. You should also create a Discord bot account through Discord's [developer portal.](https://discordapp.com/developers/docs/intro)
@@ -43,7 +43,7 @@ As pre-requisites, you must have Docker installed. In my case, I'm running Docke
    ```
 
 ## Hosting the bot using Heroku
-Heroku's integration with Docker is stupidly simple and it only takes 3 lines of configuration to get this bot working. However, if you have additional setup required such as including steps for add ons such as `heroku-postgresql`, the configuration file might increase. For that, you would consult need to consult the documentation found [here.](https://devcenter.heroku.com/articles/build-docker-images-heroku-yml)
+Heroku's integration with Docker is stupidly simple and it only takes 3 lines of configuration to get this bot working. However, if you have additional setup required such as including steps for add ons such as `heroku-postgresql`, the configuration file might increase. For that, you would need to consult the documentation found [here.](https://devcenter.heroku.com/articles/build-docker-images-heroku-yml)
 
 The files required for Heroku integration is already included with the project.
 
